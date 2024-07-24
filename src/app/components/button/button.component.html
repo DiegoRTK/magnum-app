@@ -1,0 +1,33 @@
+<button [ngClass]="classes + ' btn-block w-auto'">
+  <ng-container [ngSwitch]="iconPosition">
+    <ng-container *ngSwitchCase="'left'">
+      <span class="d-flex align-items-center">
+        <fa-icon *ngIf="icon" class="me-2" [icon]="icon"></fa-icon>
+        <span>{{ label }}</span>
+      </span>
+      <span *ngIf="!icon">{{ label }}</span>
+    </ng-container>
+    <ng-container *ngSwitchCase="'right'">
+      <span class="d-flex align-items-center">
+        <span>{{ label }}</span>
+        <fa-icon *ngIf="icon" class="ms-2" [icon]="icon"></fa-icon>
+      </span>
+      <span *ngIf="!icon">{{ label }}</span>
+    </ng-container>
+    <ng-container *ngSwitchCase="'top'">
+      <div class="text-center">
+        <fa-icon *ngIf="icon" class="mb-2" [icon]="icon"></fa-icon>
+        <span>{{ label }}</span>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="'bottom'">
+      <div class="text-center">
+        <span>{{ label }}</span>
+        <fa-icon *ngIf="icon" class="mt-2" [icon]="icon"></fa-icon>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      <span>{{ label }}</span>
+    </ng-container>
+  </ng-container>
+</button>

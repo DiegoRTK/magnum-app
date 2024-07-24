@@ -1,1 +1,43 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+@import "node_modules/bootstrap/scss/bootstrap";
+@import '~bootstrap-icons/font/bootstrap-icons.css';
+// @import "~@ng-select/ng-select/themes/default.theme.css";
+
+* {
+    scroll-behavior: smooth;
+}
+
+body {
+    overflow: visible !important;
+    padding-right: 0px !important;
+    margin-right: 0px !important;
+}
+
+
+.text-whitesmoke {
+    color: whitesmoke;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.swal2-actions.custom-actions {
+    justify-content: flex-end !important;
+}
+
+.height-auto {
+    min-height: 80vh;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .height-auto {
+        min-height: 85vh;
+    }
+}

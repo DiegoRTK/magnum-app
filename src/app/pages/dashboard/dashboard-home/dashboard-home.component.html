@@ -1,0 +1,41 @@
+<app-spinner *ngIf="isLoading; else content"></app-spinner>
+
+<ng-template #content>
+    <div class="container pt-3">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-3 text-center">
+                <h3>Registrar usuarios</h3>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row py-3">
+            <div class="col">
+                <magnum-input [showLabel]="true" type="text" [control]="usersForm.controls['player1Name']"
+                    label="Nombre jugador 1">
+                </magnum-input>
+            </div>
+            <div class="col">
+                <magnum-input [showLabel]="true" type="text" [control]="usersForm.controls['player2Name']"
+                    label="Nombre jugador 2">
+                </magnum-input>
+            </div>
+        </div>
+        <div class="row py-3">
+            <div class="col"></div>
+            <div class="col-4 text-center">
+                <div class="row">
+                    <div class="col">
+                        <magnum-button [outline]="true" label="Reiniciar" (click)="resetForm()"
+                            type="primary"></magnum-button>
+                    </div>
+                    <div class="col">
+                        <magnum-button [outline]="false" label="Iniciar batalla" (click)="startBattle()"
+                        type="primary"></magnum-button>
+                    </div>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+</ng-template>
