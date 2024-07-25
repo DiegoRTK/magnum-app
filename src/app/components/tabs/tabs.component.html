@@ -1,0 +1,11 @@
+<ul ngbNav #nav="ngbNav" [(activeId)]="selectedTab" class="nav-tabs bg-light">
+  <li *ngFor="let tab of tabs; let i = index" [ngbNavItem]="i">
+    <a ngbNavLink (click)="selectTab(i)">{{ tab }}</a>
+    <ng-template ngbNavContent>
+      <ng-content select="[tabIndex='{{i}}']"></ng-content>
+    </ng-template>
+  </li>
+</ul>
+<div class="tab-content bg-light">
+  <ng-content></ng-content>
+</div>

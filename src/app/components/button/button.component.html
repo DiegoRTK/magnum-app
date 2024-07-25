@@ -1,4 +1,4 @@
-<button [ngClass]="classes + ' btn-block w-auto'">
+<button [ngClass]="classes + ' btn-block w-auto'" [disabled]="disabled">
   <ng-container [ngSwitch]="iconPosition">
     <ng-container *ngSwitchCase="'left'">
       <span class="d-flex align-items-center">

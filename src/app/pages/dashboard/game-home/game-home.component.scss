@@ -1,0 +1,8 @@
+.disabled-icon {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+.custom-border-warning {
+  border: 20px solid #ffc107; /* Usa el color de la clase border-warning de Bootstrap */
+}

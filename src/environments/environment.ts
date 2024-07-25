@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080/api/'
+  apiUrl: 'https://magnumserviceapi.up.railway.app/api/'
 };
 
 /*

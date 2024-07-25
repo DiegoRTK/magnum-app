@@ -1,0 +1,148 @@
+<app-spinner *ngIf="isLoading; else content"></app-spinner>
+
+<ng-template #content>
+    <div class="container pt-3">
+        <div class="card">
+            <magnum-tabs [tabs]="['Juego', 'Detalle rondas']" (tabSelected)="onTabSelected($event)"
+                [selectedTab]="selectedTab">
+                <div tabIndex="0" class="container tab-pane fade py-3"
+                    [ngClass]="{ 'show active' : selectedTab === 0 }">
+                    <div class="container-fluid p-3">
+                        <div class="row">
+                            <div class="col"></div>
+                            <div class="col-3 text-center">
+                                <h5>{{player1.controls['name'].value}} vs {{player2.controls['name'].value}}</h5>
+                            </div>
+                            <div class="col text-end">
+                                <h5>Ronda actual: {{currentRoundNumber}}</h5>
+                            </div>
+                        </div>
+                        <div class="row py-3">
+                            <div class="col text-center">
+                                <h5>Puntaje:</h5>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>{{player1.controls['name'].value}}</th>
+                                            <th>{{player2.controls['name'].value}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{player1.controls['wins'].value}}</td>
+                                            <td>{{player2.controls['wins'].value}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row py-3">
+                            <div class="col text-center">
+                                <div class="row">
+                                    <div class="col"
+                                        [ngClass]="{'border border-warning custom-border-warning': player1.controls['movePlayed'].value === getMoveByIcon(IconType.HandRock)}">
+                                        <fa-icon [icon]="IconType.HandRock" class="fa-10x cursor-pointer"
+                                            style="color: #FFDAB9;"
+                                            [ngClass]="{'disabled-icon': currentRoundWinner !== player1.controls['id'].value && player1.controls['hasPlayed'].value}"
+                                            (click)="onIconClick(IconType.HandRock, PLAYERS_ENUM.PLAYER_1)"></fa-icon>
+                                    </div>
+                                    <div class="col"
+                                        [ngClass]="{'border border-warning custom-border-warning': player1.controls['movePlayed'].value === getMoveByIcon(IconType.HandPaper)}">
+                                        <fa-icon [icon]="IconType.HandPaper" class="fa-10x cursor-pointer"
+                                            style="color: #FFDAB9;"
+                                            [ngClass]="{'disabled-icon': currentRoundWinner !== player1.controls['id'].value && player1.controls['hasPlayed'].value}"
+                                            (click)="onIconClick(IconType.HandPaper, PLAYERS_ENUM.PLAYER_1)"></fa-icon>
+                                    </div>
+                                    <div class="col"
+                                        [ngClass]="{'border border-warning custom-border-warning': player1.controls['movePlayed'].value === getMoveByIcon(IconType.HandPeace)}">
+                                        <fa-icon [icon]="IconType.HandPeace" class="fa-10x cursor-pointer"
+                                            style="color: #FFDAB9;"
+                                            [ngClass]="{'disabled-icon': currentRoundWinner !== player1.controls['id'].value && player1.controls['hasPlayed'].value}"
+                                            (click)="onIconClick(IconType.HandPeace, PLAYERS_ENUM.PLAYER_1)"></fa-icon>
+                                    </div>
+                                </div>
+                                <div class="row pt-4"
+                                    *ngIf="player1.controls['movePlayed'].value > 0 && !player1.controls['hasPlayed'].value && (!hasFinishedMatch && !hasFinishedRound)">
+                                    <magnum-button type="secondary" [outline]="true" (click)="playMove()"
+                                        label="Registrar movimiento"></magnum-button>
+                                </div>
+                            </div>
+                            <div class="col-1 text-center">
+                                <div class="vr h-100"></div>
+                            </div>
+                            <div class="col text-center">
+                                <div class="row">
+                                    <div class="col"
+                                        [ngClass]="{'border border-warning custom-border-warning': player2.controls['movePlayed'].value === getMoveByIcon(IconType.HandRock)}">
+                                        <fa-icon [icon]="IconType.HandRock" class="fa-10x cursor-pointer"
+                                            [ngClass]="{'disabled-icon': currentRoundWinner !== player2.controls['id'].value && !player1.controls['hasPlayed'].value && !player2.controls['hasPlayed'].value}"
+                                            style="color: #FFDAB9;"
+                                            (click)="onIconClick(IconType.HandRock, PLAYERS_ENUM.PLAYER_2)"></fa-icon>
+                                    </div>
+                                    <div class="col"
+                                        [ngClass]="{'border border-warning custom-border-warning': player2.controls['movePlayed'].value === getMoveByIcon(IconType.HandPaper)}">
+                                        <fa-icon [icon]="IconType.HandPaper" class="fa-10x cursor-pointer"
+                                            [ngClass]="{'disabled-icon': currentRoundWinner !== player2.controls['id'].value && !player1.controls['hasPlayed'].value && !player2.controls['hasPlayed'].value}"
+                                            style="color: #FFDAB9;"
+                                            (click)="onIconClick(IconType.HandPaper, PLAYERS_ENUM.PLAYER_2)"></fa-icon>
+                                    </div>
+                                    <div class="col"
+                                        [ngClass]="{'border border-warning custom-border-warning': player2.controls['movePlayed'].value === getMoveByIcon(IconType.HandPeace)}">
+                                        <fa-icon [icon]="IconType.HandPeace" class="fa-10x cursor-pointer"
+                                            [ngClass]="{'disabled-icon': currentRoundWinner !== player2.controls['id'].value && !player1.controls['hasPlayed'].value && !player2.controls['hasPlayed'].value}"
+                                            style="color: #FFDAB9;"
+                                            (click)="onIconClick(IconType.HandPeace, PLAYERS_ENUM.PLAYER_2)"></fa-icon>
+                                    </div>
+                                </div>
+                                <div class="row pt-4"
+                                    *ngIf="player1.controls['hasPlayed'].value && !player2.controls['hasPlayed'].value && player2.controls['movePlayed'].value > 0">
+                                    <magnum-button type="secondary" [outline]="true" (click)="playMove()"
+                                        label="Registrar movimiento"></magnum-button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row py-4">
+                            <div class="col"></div>
+                            <div class="col-4 text-center">
+                                <div class="row">
+                                    <div class="col-md">
+                                        <magnum-button [outline]="true" *ngIf="!hasFinishedMatch && hasFinishedRound"
+                                            label="Nueva ronda" (click)="startNewRound()"
+                                            type="primary"></magnum-button>
+                                    </div>
+                                    <div class="col-md">
+                                        <magnum-button [outline]="false" *ngIf="hasFinishedRound && hasFinishedMatch"
+                                            label="Nueva partida" (click)="newGame()" type="primary"></magnum-button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col"></div>
+                        </div>
+                    </div>
+                </div>
+                <div tabIndex="0" class="container tab-pane fade py-3"
+                    [ngClass]="{ 'show active' : selectedTab === 1 }">
+                    <div class="row">
+                        <div class="container">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Ronda número</th>
+                                        <th>Ganador ronda</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let round of rounds; let i = index;">
+                                        <td>{{i + 1}}</td>
+                                        <td>{{round['winner']}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </magnum-tabs>
+        </div>
+    </div>
+</ng-template>

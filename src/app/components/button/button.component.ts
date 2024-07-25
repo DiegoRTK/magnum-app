@@ -15,6 +15,7 @@ export class ButtonComponent {
   @Input() outline: boolean = false;
   @Input() contentPosition = '';
   @Input() border = true;
+  @Input() disabled = false;
 
   get classes(): string {
     let buttonClasses = `${this.contentPosition} btn`;

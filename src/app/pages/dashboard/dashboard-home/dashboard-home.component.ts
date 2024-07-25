@@ -1,9 +1,9 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { finalize } from 'rxjs';
-import { AlertService } from 'src/app/shared/services/alert.service';
-import { GameService } from 'src/app/shared/services/game.service';
+import { Store } from '@ngrx/store';
+import { ToastrService } from 'ngx-toastr';
+import { startBatlle } from 'src/app/store/app.actions';
+import { AppStateProps } from 'src/app/store/app.state';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -20,8 +20,8 @@ export class DashboardHomeComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private alertService: AlertService,
-    private gameService: GameService
+    private store: Store<AppStateProps>,
+    private toastService: ToastrService
   ) {}
 
   ngOnInit(): void {}
@@ -32,31 +32,13 @@ export class DashboardHomeComponent implements OnInit {
 
   public startBattle(): void {
     if (this.usersForm.invalid) {
-      this.alertService.showWarning('Todos los campos son obligatorios');
+      this.toastService.info('Todos los campos son obligatorios.');
       this.usersForm.markAllAsTouched();
       this.usersForm.updateValueAndValidity();
       return;
     }
     this.isLoading = true;
-    this.gameService
-      .startBattle(this.usersForm.value)
-      .pipe(finalize(() => (this.isLoading = false)))
-      .subscribe({
-        next: (value) => {
-          this.alertService.showSuccess('¡La partida ha comenzado!');
-        },
-        error: (error) => {
-          let errorMessage: string;
-          if (error instanceof HttpErrorResponse) {
-            errorMessage =
-              error?.error?.message ||
-              'Ha ocurrido un error al iniciar la partida.';
-          } else {
-            errorMessage = String(error) || 'Ha ocurrido un error inesperado.';
-          }
-
-          this.alertService.showError(errorMessage);
-        },
-      });
+    this.store.dispatch(startBatlle(this.usersForm.value));
+    this.isLoading = false;
   }
 }

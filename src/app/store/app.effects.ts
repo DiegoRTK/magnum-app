@@ -1,62 +1,72 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import * as AuthActions from './app.actions';
+import * as GameActions from './app.actions';
 import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { AuthService } from '../services/login.service';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
+import { GameService } from '../shared/services/game.service';
 
 @Injectable()
-export class AuthEffects {
+export class GameEffects {
   constructor(
     private actions$: Actions,
-    private authService: AuthService,
+    private gameService: GameService,
     private toastr: ToastrService,
-    private router: Router,
-    private cookieService: CookieService
+    private router: Router
   ) {}
 
-  login$ = createEffect(() =>
+  startBattle$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(AuthActions.login),
+      ofType(GameActions.startBatlle),
       mergeMap((action) =>
-        this.authService.login(action.email, action.password).pipe(
-          tap((response) => {
-            this.cookieService.set('access_token', response.access_token);
-          }),
+        this.gameService.startBattle(action).pipe(
           map((response) =>
-            AuthActions.loginSuccess({
-              accountId: response.accountId,
-              access_token: response.access_token,
-              role: response.role,
-              agentId: response.agentId,
+            GameActions.battleSuccess({
+              player1: response.player1,
+              player2: response.player2,
+              roundId: response.roundId,
+              gameSessionId: response.gameSessionId,
             })
           ),
-          catchError((error) => of(AuthActions.loginFailure({ error })))
+          catchError((error) => of(GameActions.battleFailure({ error })))
         )
       )
     )
   );
 
-  loginSuccess$ = createEffect(
+  battleSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(AuthActions.loginSuccess),
-        tap((response) => {
-          this.cookieService.delete('access_token');
-          this.cookieService.set('access_token', response.access_token);
-          this.router.navigate(['/citas'])
+        ofType(GameActions.battleSuccess),
+        tap(() => {
+          this.toastr.success('!La partida ha comenzado!');
+          this.router.navigate(['/dashboard/juego']);
         })
       ),
     { dispatch: false }
   );
 
-  loginFailure$ = createEffect(() =>
+  newRoundSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(GameActions.newRoundSuccess),
+        tap(() => {
+          this.toastr.success('!Se ha creado la ronda correctamente!');
+        }),
+        map((response) =>
+          GameActions.newRoundSuccess({
+            roundId: response.roundId,
+          })
+        )
+      ),
+    { dispatch: false }
+  );
+
+  battleError$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(AuthActions.loginFailure),
+      ofType(GameActions.battleFailure),
       map(({ error }) => {
         if (
           error instanceof HttpErrorResponse &&
@@ -67,21 +77,8 @@ export class AuthEffects {
         } else {
           this.toastr.error('Ha ocurrido un error inesperado.', 'Error');
         }
-        return { type: '[Auth] Login Failure Toast Shown' };
+        return { type: '[Game] Battle Failure Toast Shown' };
       })
     )
-  );
-
-  logout$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(AuthActions.logout),
-        tap(() => {
-          this.cookieService.delete('access_token');
-          this.router.navigateByUrl('/login');
-          localStorage.clear();
-        })
-      ),
-    { dispatch: false }
   );
 }

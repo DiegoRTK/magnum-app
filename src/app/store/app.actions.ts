@@ -1,22 +1,28 @@
 import { createAction, props } from '@ngrx/store';
-import { RoleProps } from './app.state';
+import { PlayerInterface } from '../shared/interfaces/player.interface';
+import { BattleInterface } from '../shared/interfaces/battle.interface';
 
-export const login = createAction(
-  '[Auth] Login',
-  props<{ email: string, password: string }>()
+export const startBatlle = createAction(
+  '[Game] Start',
+  props<{ player1Name: string; player2Name: string }>()
 );
 
-
-export const loginSuccess = createAction(
-  '[Auth] Login Success',
-  props<{ accountId: string, access_token: string, role: RoleProps, agentId: number }>()
+export const battleSuccess = createAction(
+  '[Game] Start Success',
+  props<{
+    player1: PlayerInterface;
+    player2: PlayerInterface;
+    roundId: number;
+    gameSessionId: number;
+  }>()
 );
 
-export const loginFailure = createAction(
-  '[Auth] Login Failure',
+export const battleFailure = createAction(
+  '[Game] Start Failure',
   props<{ error: any }>()
 );
 
-export const setCurrentRoute = createAction('[Router] Set Current Route', props<{ route: number, subIndex?: number }>());
-
-export const logout = createAction('[Auth] Logout');
+export const newRoundSuccess = createAction(
+  '[Game] New Round',
+  props<{roundId: number}>()
+);

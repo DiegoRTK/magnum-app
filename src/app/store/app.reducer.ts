@@ -1,50 +1,52 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import * as AuthActions from './app.actions';
+import * as GameActions from './app.actions';
 import { InitialState } from './app.state';
 
 const initialState: InitialState = {
-  isAuthenticated: false,
-  accountId: null,
-  access_token: null,
-  error: null,
-  role: {
-    roleId: 0,
-    roleName: '',
-    description: '',
-    createdAt: new Date()
+  roundId: 0,
+  gameSessionId: 0,
+  error: '',
+  player1: {
+    id: 0,
+    name: '',
   },
-  agentId: 0
+  player2: {
+    id: 0,
+    name: '',
+  },
 };
 
 const authReducer = createReducer(
   initialState,
-  on(AuthActions.loginSuccess, (state, { accountId, access_token, role, agentId}) => ({
+  on(
+    GameActions.battleSuccess,
+    (state, { player1, player2, roundId, gameSessionId }) => ({
+      ...state,
+      player1,
+      player2,
+      roundId,
+      gameSessionId,
+    })
+  ),
+  on(GameActions.battleFailure, (state, { error }) => ({
     ...state,
-    isAuthenticated: true,
-    accountId: accountId,
-    agentId: agentId,
-    access_token: access_token,
-    error: null,
-    role: role
+    player1: {
+      id: 0,
+      name: '',
+    },
+    player2: {
+      id: 0,
+      name: '',
+    },
+    roundId: 0,
+    gameSessionId: 0,
+    error: error,
+    player1Name: '',
+    player2Name: '',
   })),
-  on(AuthActions.loginFailure, (state, { error }) => ({
+  on(GameActions.newRoundSuccess, (state, { roundId }) => ({
     ...state,
-    isAuthenticated: false,
-    accountId: null,
-    access_token: null,
-    error: error
-  })),
-  on(AuthActions.logout, (state) => ({
-    ...state,
-    isAuthenticated: false,
-    accountId: null,
-    access_token: null,
-    error: null
-  })),
-  on(AuthActions.setCurrentRoute, (state, { route, subIndex }) => ({
-    ...state,
-    currentRoute: route,
-    subIndex: subIndex
+    roundId,
   }))
 );
 
